@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 239 84% 67%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 239 84% 67%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 239 84% 67%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 239 84% 67%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease forwards;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease forwards;
+}
+
+/* Chat message styles */
+@layer components {
+  .chat-message {
+    @apply max-w-[85%] animate-slide-up;
+  }
+
+  .chat-message-user {
+    @apply ml-auto bg-primary/10 text-foreground;
+  }
+
+  .chat-message-bot {
+    @apply bg-secondary text-foreground;
+  }
+
+  /* Section divider */
+  .section-divider {
+    @apply flex items-center w-full my-6 animate-fade-in;
+  }
+
+  .section-divider::before,
+  .section-divider::after {
+    content: "";
+    @apply flex-1 h-px bg-border;
+  }
+
+  .section-divider::before {
+    @apply mr-3;
+  }
+
+  .section-divider::after {
+    @apply ml-3;
+  }
+
+  .section-divider-text {
+    @apply text-sm font-medium text-muted-foreground uppercase tracking-wider;
+  }
+
+  /* Table styles */
+  .editable-table {
+    @apply w-full border-collapse;
+  }
+
+  .editable-table th,
+  .editable-table td {
+    @apply p-3 border border-border text-left;
+  }
+
+  .editable-table th {
+    @apply bg-muted/50 font-medium;
+  }
+
+  .editable-table input {
+    @apply w-full p-2 border-0 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary;
+  }
+
+  .add-button {
+    @apply flex items-center justify-center p-1 text-sm border border-dashed border-muted-foreground/50 rounded text-muted-foreground hover:bg-primary/10 hover:text-primary hover:border-primary transition-colors;
+  }
+}

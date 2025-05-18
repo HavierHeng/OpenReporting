@@ -128,9 +128,93 @@
         <!-- Chat Interface -->
         <div class="card">
           <div id="chat-history" class="chat-history">
-            <div class="chat-bubble">
-              <p>Hello, I am OpenReporting, and I am here to assist you with making your report. Please select a config to begin.</p>
+            <!-- Welcome Message -->
+            <div class="chat-message">
+              <div class="chat-message-content">
+                <p>Hello, I am OpenReporting, and I am here to assist you with making your report. Please select a config to begin.</p>
+              </div>
+              <div class="chat-message-time">Now</div>
             </div>
+            
+            <!-- Example of a section divider -->
+            <!-- <div class="section-divider">Static Fields</div> -->
+            
+            <!-- Example of a static fields form -->
+            <!-- <div id="static-fields-form" class="chat-form">
+              <h3 class="chat-form-title">Static Fields</h3>
+              
+              <div class="form-group">
+                <label for="client_name" class="form-label">Client Name</label>
+                <input type="text" id="client_name" name="client_name" class="form-input" placeholder="Enter client name">
+                <span class="text-sm text-muted">Full name of the client</span>
+              </div>
+              
+              <div class="form-group">
+                <label for="report_date" class="form-label">Report Date</label>
+                <input type="date" id="report_date" name="report_date" value="2025-05-19" class="form-input">
+                <span class="text-sm text-muted">Date of the report (YYYY-MM-DD)</span>
+              </div>
+              
+              <div x-data="{ tableData: $root.tableData }" class="form-group">
+                <label class="form-label">Items Table</label>
+                
+                <div class="table-container">
+                  <table class="editable-table">
+                    <thead>
+                      <tr>
+                        <template x-for="(header, index) in tableData.headers" :key="index">
+                          <th>
+                            <input type="text" x-model="tableData.headers[index]" placeholder="Column name">
+                          </th>
+                        </template>
+                        <th style="width: 40px;"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <template x-for="(row, rowIndex) in tableData.rows" :key="rowIndex">
+                        <tr>
+                          <template x-for="(cell, cellIndex) in row" :key="cellIndex">
+                            <td>
+                              <input type="text" x-model="tableData.rows[rowIndex][cellIndex]" placeholder="Enter value">
+                            </td>
+                          </template>
+                          <td>
+                            <button @click="removeTableRow(rowIndex)" class="btn btn-icon" title="Remove row">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                              </svg>
+                            </button>
+                          </td>
+                        </tr>
+                      </template>
+                    </tbody>
+                  </table>
+                </div>
+                
+                <div class="table-actions">
+                  <button @click="addTableRow()" class="add-row-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Add Row
+                  </button>
+                  
+                  <button @click="addTableColumn()" class="add-column-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Add Column
+                  </button>
+                </div>
+              </div>
+              
+              <div class="chat-form-actions">
+                <button @click="submitStaticFields()" class="btn btn-primary">Submit Static Fields</button>
+              </div>
+            </div> -->
           </div>
           
           <form @submit.prevent="sendMessage" class="chat-input-wrapper">
