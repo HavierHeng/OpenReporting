@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" x-bind:class="{ 'dark': darkMode }">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenReporting</title>
+  <script src="https://cdn.jsdelivr.net/npm/htmx@1.9.10/dist/htmx.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.3/dist/cdn.min.js" defer></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    @media (max-width: 639px) {
+      .sidebar-open {
+        transform: translateX(0);
+        transition: transform 0.3s ease-in-out;
+      }
+      .sidebar-closed {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+      }
+    }
+  </style>
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('app', () => ({
+        darkMode: localStorage.getItem('darkMode') === 'true' || window.matchMedia('(prefers-color-scheme: dark)').matches,
+        settingsOpen: false,
+        sidebarOpen: false,
+        historyOpen: false,
+        init() {
+          console.log('Initializing darkMode:', this.darkMode);
+          document.documentElement.classList.toggle('dark', this.darkMode);
+          window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!localStorage.getItem('darkMode')) {
+              this.darkMode = e.matches;
+              console.log('System theme changed, darkMode:', this.darkMode);
+              document.documentElement.classList.toggle('dark', this.darkMode);
+            }
+          });
+        },
+        toggleDarkMode() {
+          this.darkMode = !this.darkMode;
+          localStorage.setItem('darkMode', this.darkMode);
+          document.documentElement.classList.toggle('dark', this.darkMode);
+          console.log('Toggled darkMode:', this.darkMode);
+        },
+        toggleSettings() {
+          this.settingsOpen = !this.settingsOpen;
+        },
+        toggleSidebar() {
+          this.sidebarOpen = !this.sidebarOpen;
+        },
+        toggleHistory() {
+          this.historyOpen = !this.historyOpen;
+        }
+      }));
+    });
+  </script>
+</head>
+<body class="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex" x-data="app">
+  <!-- Sidebar -->
+  <aside class="fixed inset-y-0 left-0 w-16 group hover:w-48 sm:block hidden bg-white dark:bg-gray-800 shadow transition-all duration-300 z-10" :class="{ 'w-full h-full sidebar-open z-20': sidebarOpen && window.innerWidth < 640, 'sidebar-closed': !sidebarOpen && window.innerWidth < 640 }" @click.outside="sidebarOpen = false">
+    <div class="flex flex-col h-full">
+      <div class="flex items-center h-16 px-4">
+        <span class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 sm:group-hover:hidden">O</span>
+        <h1 class="text-xl font-bold hidden group-hover:block">OpenReporting</h1>
+        <button @click="toggleSidebar" class="sm:hidden ml-auto p-2 text-gray-600 dark:text-gray-300">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <nav class="flex-1 flex flex-col space-y-2 px-2">
+        <a href="/" hx-get="/dashboard" hx-target="#main-content" hx-push-url="true" class="flex items-center p-2 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-900 text-gray-600 dark:text-gray-300 group">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          <span class="ml-3 hidden group-hover:block">Home</span>
+        </a>
+        <a href="/chatbot" hx-get="/chatbot" hx-target="#main-content" hx-push-url="true" class="flex items-center p-2 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-900 text-gray-600 dark:text-gray-300 group">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+          <span class="ml-3 hidden group-hover:block">Chatbot</span>
+        </a>
+        <a href="/config" hx-get="/config" hx-target="#main-content" hx-push-url="true" class="flex items-center p-2 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-900 text-gray-600 dark:text-gray-300 group">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+          <span class="ml-3 hidden group-hover:block">Config</span>
+        </a>
+        <button @click="toggleHistory" class="flex items-center p-2 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-900 text-gray-600 dark:text-gray-300 group w-full text-left">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <span class="ml-3 hidden group-hover:block">History</span>
+        </button>
+      </nav>
+      <div class="mt-auto p-2">
+        <button @click="toggleDarkMode" class="flex items-center p-2 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-900 w-full">
+          <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+          <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+          <span class="ml-3 hidden group-hover:block">Toggle Theme</span>
+        </button>
+        <button @click="toggleSettings" class="flex items-center p-2 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-900 w-full">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2"fmt572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          <span class="ml-3 hidden group-hover:block">Settings</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Hamburger Menu -->
+  <button @click="toggleSidebar" class="sm:hidden fixed top-4 left-4 z-20 p-2 bg-indigo-600 text-white rounded-md">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+  </button>
+
+  <!-- Main Content -->
+  <main id="main-content" class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6" :class="{ 'ml-16': window.innerWidth >= 640 }">
+    <!-- Default Dashboard -->
+    <div>
+      <h2 class="text-2xl font-bold mb-4">Dashboard</h2>
+      <p class="text-sm sm:text-base">Welcome to OpenReporting! Start by creating a new report with the Chatbot or editing a YAML configuration.</p>
+      <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="bg-white dark:bg-gray-800 p-2 sm:p-4 rounded-lg shadow text-sm sm:text-base">
+          <h3 class="text-lg font-semibold">Recent Configs</h3>
+          <p class="text-gray-600 dark:text-gray-400">No recent configs. <a href="/config" hx-get="/config" hx-target="#main-content" class="text-indigo-600 dark:text-indigo-400">Create one</a>.</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-2 sm:p-4 rounded-lg shadow text-sm sm:text-base">
+          <h3 class="text-lg font-semibold">Recent Reports</h3>
+          <p class="text-gray-600 dark:text-gray-400">No recent reports. <a href="/chatbot" hx-get="/chatbot" hx-target="#main-content" class="text-indigo-600 dark:text-indigo-400">Start a chat</a>.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Settings Overlay -->
+  <div x-show="settingsOpen" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50" @click.outside="settingsOpen = false">
+    <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-md">
+      <h2 class="text-xl font-bold mb-4">Settings</h2>
+      <div>
+        <label class="block text-sm sm:text-base font-medium">Name</label>
+        <input type="text" hx-post="/api/settings" hx-vals='{"key": "user_name"}' class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700" placeholder="Your name">
+      </div>
+      <div class="mt-4">
+        <label class="block text-sm font-medium">Email</label>
+        <input type="email" hx-post="/api/settings" hx-vals='{"key": "user_email"}' class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700" placeholder="Your email">
+      </div>
+      <div class="mt-4">
+        <label class="block text-sm font-medium">Address</label>
+        <input type="text" hx-post="/api/settings" hx-vals='{"key": "user_address"}' class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700" placeholder="Your address">
+      </div>
+      <div class="mt-4">
+        <label class="flex items-center">
+          <input type="checkbox" hx-post="/api/settings" hx-vals='{"key": "rag_enabled", "value": "toggle"}' class="rounded border-gray-300 dark:border-gray-600">
+          <span class="ml-2 text-sm">Enable RAG (Experimental)</span>
+        </label>
+      </div>
+      <div class="mt-4">
+        <label class="flex items-center">
+          <input type="checkbox" hx-post="/api/settings" hx-vals='{"key": "validator_enabled", "value": "toggle"}' class="rounded border-gray-300 dark:border-gray-600">
+          <span class="ml-2 text-sm">Enable Validator Agents (Experimental)</span>
+        </label>
+      </div>
+      <button @click="settingsOpen = false" class="mt-6 w-full bg-indigo-600 text-white p-2 rounded-md">Close</button>
+    </div>
+  </div>
+
+  <!-- History Overlay -->
+  <div x-show="historyOpen" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50" @click.outside="historyOpen = false">
+    <div class="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-md">
+      <h2 class="text-xl font-bold mb-4">Report History</h2>
+      <ul class="h-[50vh] overflow-y-auto mb-4 text-sm sm:text-base">
+        <li class="flex justify-between items-center p-2 border-b border-gray-300 dark:border-gray-600">
+          <span>Report_2025-05-01.docx</span>
+          <button hx-get="/api/download-report/1" class="bg-indigo-600 text-white p-1 rounded-md text-xs sm:text-sm">Download</button>
+        </li>
+        <li class="flex justify-between items-center p-2 border-b border-gray-300 dark:border-gray-600">
+          <span>Report_2025-05-02.docx</span>
+          <button hx-get="/api/download-report/2" class="bg-indigo-600 text-white p-1 rounded-md text-xs sm:text-sm">Download</button>
+        </li>
+      </ul>
+      <button @click="historyOpen = false" class="w-full bg-indigo-600 text-white p-2 rounded-md">Close</button>
+    </div>
+  </div>
+</body>
+</html>
