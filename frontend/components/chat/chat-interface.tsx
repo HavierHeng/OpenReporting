@@ -9,9 +9,12 @@ import { SectionDivider } from "@/components/chat/section-divider"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Loader2 } from "lucide-react"
+import { DynamicFieldForm } from "./dynamic-field-form"
+import { FieldBanner } from "./field-banner"
 
 export function ChatInterface() {
-  const { messages, configSelected, staticFieldsSubmitted, currentSection, sendMessage, isLoading } = useReportContext()
+  const { messages, configSelected, staticFieldsSubmitted, currentSection, sendMessage, isLoading, updateStaticField } =
+    useReportContext()
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const chatContainerRef = useRef<HTMLDivElement>(null)
@@ -46,6 +49,18 @@ export function ChatInterface() {
     sendMessage(message)
   }
 
+  const handleDynamicFieldSubmit = (value: string) => {
+    // In a real app, this would save the field to the appropriate place
+    if (currentSection === "finances") {
+      updateStaticField("finance_description", value)
+    } else if (currentSection === "market_analysis") {
+      updateStaticField("market_analysis", value)
+    }
+
+    // Send a message to the chat
+    sendMessage(`I've provided the following information: "${value.substring(0, 50)}${value.length > 50 ? "..." : ""}"`)
+  }
+
   // Function to render section dividers based on message content
   const renderMessageWithDividers = (message: any, index: number) => {
     // Special handling for section transition messages
@@ -65,6 +80,16 @@ export function ChatInterface() {
     return <ChatMessage key={message.id} message={message} />
   }
 
+  // Determine if we should show a dynamic field form
+  const showFinanceForm =
+    staticFieldsSubmitted &&
+    currentSection === "finances" &&
+    !messages.some((m) => m.content.includes("I've provided the following information") && m.role === "user")
+
+  const showMarketAnalysisForm =
+    currentSection === "market_analysis" &&
+    !messages.some((m) => m.content.includes("I've provided the following information") && m.role === "user")
+
   return (
     <Card className="mt-6">
       <div ref={chatContainerRef} className="h-[calc(100vh-250px)] overflow-y-auto p-4 space-y-4">
@@ -81,6 +106,29 @@ export function ChatInterface() {
 
         {/* Render all messages except the welcome message */}
         {messages.slice(1).map(renderMessageWithDividers)}
+
+        {/* Show dynamic field forms when appropriate */}
+        {showFinanceForm && (
+          <>
+            <FieldBanner fieldName="finance_description" />
+            <DynamicFieldForm
+              fieldName="finance_description"
+              fieldLabel="Financial Description"
+              onSubmit={handleDynamicFieldSubmit}
+            />
+          </>
+        )}
+
+        {showMarketAnalysisForm && (
+          <>
+            <FieldBanner fieldName="market_analysis" />
+            <DynamicFieldForm
+              fieldName="market_analysis"
+              fieldLabel="Market Analysis"
+              onSubmit={handleDynamicFieldSubmit}
+            />
+          </>
+        )}
 
         {/* Loading indicator */}
         {isLoading && (

@@ -7,11 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getConfigs, getPreviousReport } from "@/lib/api"
 import { Loader2 } from "lucide-react"
+import { Label } from "@/components/ui/label"
 
 export function ConfigSelection() {
-  const { setConfigSelected, updateStaticField, tableData, setTableData } = useReportContext()
+  const { setConfigSelected, updateStaticField, setTableData } = useReportContext()
   const [showPrevious, setShowPrevious] = useState(false)
-  const [configs, setConfigs] = useState<{ id: string; name: string }[]>([])
+  const [configs, setConfigs] = useState<{ id: string; name: string; description: string }[]>([])
   const [loading, setLoading] = useState(false)
   const [loadingConfigs, setLoadingConfigs] = useState(true)
 
@@ -46,7 +47,7 @@ export function ConfigSelection() {
       Object.entries(data).forEach(([key, value]) => {
         if (key === "items_table") {
           // Handle table data separately
-          setTableData(value as any)
+          setTableData({ items_table: value })
         } else {
           updateStaticField(key, value)
         }
@@ -67,8 +68,9 @@ export function ConfigSelection() {
         <CardTitle>Select Configuration</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div className="space-y-2">
+            <Label>Configuration Template</Label>
             {loadingConfigs ? (
               <div className="flex items-center justify-center py-2">
                 <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
@@ -108,10 +110,10 @@ export function ConfigSelection() {
                 ) : (
                   <>
                     <Button variant="secondary" onClick={() => handlePreviousSelect("1")} className="w-full">
-                      Report_2025-05-01
+                      Financial Report - May 2025
                     </Button>
                     <Button variant="secondary" onClick={() => handlePreviousSelect("2")} className="w-full">
-                      Report_2025-05-02
+                      Project Status Report - Q2
                     </Button>
                   </>
                 )}

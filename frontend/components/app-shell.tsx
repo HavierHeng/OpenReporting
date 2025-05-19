@@ -9,8 +9,7 @@ import { Sidebar } from "@/components/sidebar"
 import { useState } from "react"
 import { HistoryDialog } from "./dialogs/history-dialog"
 import { SettingsDialog } from "./dialogs/settings-dialog"
-import { ConfigSelection } from "./chat/config-selection"
-import { ChatInterface } from "./chat/chat-interface"
+import { ChatbotContent } from "./chat/chatbot-content"
 import { usePathname } from "next/navigation"
 
 interface AppShellProps {
@@ -61,18 +60,3 @@ export function AppShell({ children }: AppShellProps) {
     </ReportProvider>
   )
 }
-
-// Separate component for chatbot content to ensure context is available
-function ChatbotContent() {
-  const { configSelected } = useReportContext()
-
-  return (
-    <>
-      {!configSelected && <ConfigSelection />}
-      <ChatInterface />
-    </>
-  )
-}
-
-// Import at the end to avoid circular dependencies
-import { useReportContext } from "@/components/providers/report-provider"

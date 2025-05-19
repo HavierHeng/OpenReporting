@@ -104,15 +104,27 @@
 
 /* Chat message styles */
 @layer components {
+  .chat-message-container {
+    @apply flex w-full mb-4;
+  }
+
   .chat-message {
     @apply max-w-[85%] animate-slide-up;
   }
 
-  .chat-message-user {
-    @apply ml-auto bg-primary/10 text-foreground;
+  .chat-bubble {
+    @apply px-4 py-3 rounded-lg;
   }
 
-  .chat-message-bot {
+  .chat-message-user {
+    @apply ml-auto;
+  }
+
+  .chat-message-user .chat-bubble {
+    @apply bg-primary/10 text-foreground;
+  }
+
+  .chat-message-bot .chat-bubble {
     @apply bg-secondary text-foreground;
   }
 
@@ -123,20 +135,28 @@
 
   .section-divider::before,
   .section-divider::after {
-    content: "";
     @apply flex-1 h-px bg-border;
   }
 
   .section-divider::before {
-    @apply mr-3;
+    @apply mr-4;
   }
 
   .section-divider::after {
-    @apply ml-3;
+    @apply ml-4;
   }
 
   .section-divider-text {
     @apply text-sm font-medium text-muted-foreground uppercase tracking-wider;
+  }
+
+  /* Field header */
+  .field-header {
+    @apply w-full my-4 animate-fade-in;
+  }
+
+  .field-header-banner {
+    @apply py-2 px-4 bg-primary/10 text-primary rounded-md text-center text-sm font-medium;
   }
 
   /* Table styles */
@@ -156,8 +176,62 @@
   .editable-table input {
     @apply w-full p-2 border-0 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary;
   }
+}
 
-  .add-button {
-    @apply flex items-center justify-center p-1 text-sm border border-dashed border-muted-foreground/50 rounded text-muted-foreground hover:bg-primary/10 hover:text-primary hover:border-primary transition-colors;
+/* Document preview styles */
+@layer components {
+  .preview-container {
+    @apply bg-card;
+  }
+
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+
+    .preview-container,
+    .preview-container * {
+      visibility: visible;
+    }
+
+    .preview-container {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+  }
+
+  /* Prose styles for document preview */
+  .prose {
+    @apply text-foreground max-w-none;
+  }
+
+  .prose h1 {
+    @apply text-2xl font-bold mb-4 mt-0;
+  }
+
+  .prose h2 {
+    @apply text-xl font-semibold mt-6 mb-3;
+  }
+
+  .prose p {
+    @apply mb-4;
+  }
+
+  .prose table {
+    @apply w-full border-collapse mb-4;
+  }
+
+  .prose th {
+    @apply bg-muted/30 p-2 border border-border text-left font-medium;
+  }
+
+  .prose td {
+    @apply p-2 border border-border;
+  }
+
+  .dark .prose {
+    @apply text-foreground;
   }
 }

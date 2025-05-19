@@ -6,6 +6,9 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { HelpCircle } from "lucide-react"
+import { useState } from "react"
+import { HelpDialog } from "./dialogs/help-dialog"
 
 interface SidebarProps {
   open: boolean
@@ -16,6 +19,7 @@ interface SidebarProps {
 
 export function Sidebar({ open, onOpenChange, onHistoryClick, onSettingsClick }: SidebarProps) {
   const pathname = usePathname()
+  const [helpOpen, setHelpOpen] = useState(false)
 
   return (
     <>
@@ -104,7 +108,7 @@ export function Sidebar({ open, onOpenChange, onHistoryClick, onSettingsClick }:
                 Config
               </NavItem>
 
-              <Button variant="ghost" className="w-full justify-start" onClick={onHistoryClick}>
+              <Button variant="ghost" className="w-full justify-start" onClick={() => onHistoryClick()}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -144,9 +148,16 @@ export function Sidebar({ open, onOpenChange, onHistoryClick, onSettingsClick }:
               </svg>
               Settings
             </Button>
+
+            <Button variant="ghost" className="w-full justify-start mt-2" onClick={() => setHelpOpen(true)}>
+              <HelpCircle className="mr-2 h-5 w-5" />
+              Help
+            </Button>
           </div>
         </div>
       </div>
+
+      <HelpDialog open={helpOpen} onOpenChange={setHelpOpen} />
     </>
   )
 }
